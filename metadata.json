@@ -1,0 +1,6 @@
+{
+  "name": "VibeCheck",
+  "description": "Konuma ve müziğe dayalı anlık sosyal frekans keşif uygulaması. Ne dinlediğini ve modunu haritada küre olarak paylaş, frekansın uyuşanlarla 2 saatlik flaş sohbetler başlat.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

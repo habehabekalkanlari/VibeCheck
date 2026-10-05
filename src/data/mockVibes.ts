@@ -1,0 +1,333 @@
+import { SongTrack, VibeSphere, UserProfile } from '../types/vibe';
+
+// Generated high-fidelity asset paths
+export const COVER_IMAGES = {
+  indie: '/src/assets/images/vibe_cover_indie_night_1791203363549.jpg',
+  techno: '/src/assets/images/vibe_cover_techno_berlin_1791203376650.jpg',
+  lofi: '/src/assets/images/vibe_cover_lofi_sunset_1791203398678.jpg',
+  rock: '/src/assets/images/vibe_cover_anatolian_rock_1791203413631.jpg',
+};
+
+export const SAMPLE_SONGS: SongTrack[] = [
+  {
+    id: 's-1',
+    title: '505',
+    artist: 'Arctic Monkeys',
+    album: 'Favourite Worst Nightmare',
+    coverUrl: COVER_IMAGES.indie,
+    durationSec: 253,
+    bpm: 140,
+    genre: 'indie',
+    service: 'spotify',
+    vibeColor: '#0ea5e9',
+    previewSynthPreset: 'indie',
+  },
+  {
+    id: 's-2',
+    title: 'Koca Bir Saçmalık',
+    artist: 'Jakuzi',
+    album: 'Fantezi Müzik',
+    coverUrl: COVER_IMAGES.rock,
+    durationSec: 214,
+    bpm: 124,
+    genre: 'indie',
+    service: 'spotify',
+    vibeColor: '#f97316',
+    previewSynthPreset: 'synthwave',
+  },
+  {
+    id: 's-3',
+    title: 'Danielle (smile on my face)',
+    artist: 'Fred Again..',
+    album: 'Actual Life 3',
+    coverUrl: COVER_IMAGES.techno,
+    durationSec: 201,
+    bpm: 132,
+    genre: 'techno',
+    service: 'apple-music',
+    vibeColor: '#8b5cf6',
+    previewSynthPreset: 'techno',
+  },
+  {
+    id: 's-4',
+    title: 'Coffee Beans & Rain',
+    artist: 'ChilledCow / Lofi Girl',
+    album: '1 A.M Study Session',
+    coverUrl: COVER_IMAGES.lofi,
+    durationSec: 184,
+    bpm: 82,
+    genre: 'lofi',
+    service: 'spotify',
+    vibeColor: '#eab308',
+    previewSynthPreset: 'lofi',
+  },
+  {
+    id: 's-5',
+    title: 'İstikrarlı Hayal Hakikattir',
+    artist: 'Gaye Su Akyol',
+    album: 'İstikrarlı Hayal Hakikattir',
+    coverUrl: COVER_IMAGES.rock,
+    durationSec: 228,
+    bpm: 118,
+    genre: 'rock',
+    service: 'spotify',
+    vibeColor: '#ec4899',
+    previewSynthPreset: 'rock',
+  },
+  {
+    id: 's-6',
+    title: 'After Hours',
+    artist: 'The Weeknd',
+    album: 'After Hours',
+    coverUrl: COVER_IMAGES.indie,
+    durationSec: 361,
+    bpm: 109,
+    genre: 'rnb',
+    service: 'apple-music',
+    vibeColor: '#ef4444',
+    previewSynthPreset: 'synthwave',
+  },
+  {
+    id: 's-7',
+    title: 'Veridis Quo',
+    artist: 'Daft Punk',
+    album: 'Discovery',
+    coverUrl: COVER_IMAGES.techno,
+    durationSec: 344,
+    bpm: 106,
+    genre: 'ambient',
+    service: 'spotify',
+    vibeColor: '#06b6d4',
+    previewSynthPreset: 'synthwave',
+  },
+  {
+    id: 's-8',
+    title: '(It Goes Like) Nanana',
+    artist: 'Peggy Gou',
+    album: 'I Hear You',
+    coverUrl: COVER_IMAGES.lofi,
+    durationSec: 231,
+    bpm: 130,
+    genre: 'techno',
+    service: 'spotify',
+    vibeColor: '#10b981',
+    previewSynthPreset: 'techno',
+  }
+];
+
+export const CURRENT_USER: UserProfile = {
+  id: 'usr-self',
+  name: 'Kaan Demir',
+  handle: '@kaan_vibes',
+  isAnonymousDefault: false,
+  connectedService: 'spotify',
+  currentSong: SAMPLE_SONGS[0],
+  stats: {
+    totalSpheresDropped: 28,
+    flashChatsStarted: 14,
+    topVibeGenre: 'İndie & Lo-Fi',
+    currentFrequencyScore: 92,
+  },
+  recentMoodBreakdown: [
+    { label: 'Melankolik & Sakin', percent: 45, color: '#38bdf8' },
+    { label: 'Gece & Elektronik', percent: 35, color: '#a855f7' },
+    { label: 'Enerjik & Keşif', percent: 20, color: '#f59e0b' },
+  ]
+};
+
+// Initial active spheres around vibrant urban hotspots
+const now = Date.now();
+const hourMs = 60 * 60 * 1000;
+
+export const INITIAL_SPHERES: VibeSphere[] = [
+  {
+    id: 'sphere-1',
+    user: {
+      id: 'u-1',
+      name: 'Ece Yıldız',
+      handle: '@ece_y',
+      isAnonymous: false,
+      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
+    },
+    song: SAMPLE_SONGS[1], // Jakuzi - Koca Bir Saçmalık
+    moodTags: ['melankolik', 'rüzgar', 'anadolu'],
+    note: 'Moda sahilinde kayalıklarda gün batımı... tam bu parça.',
+    location: {
+      name: 'Moda Sahili Kayalıklar',
+      neighborhood: 'Moda, Kadıköy',
+      city: 'İstanbul',
+      lat: 40.9845,
+      lng: 29.0280,
+      distanceMeters: 340,
+    },
+    createdAt: now - (25 * 60 * 1000),
+    expiresAt: now + (95 * 60 * 1000), // ~1 hr 35m left
+    energyLevel: 3,
+    resonanceScore: 96,
+    activeListenersCount: 6,
+    hasActiveFlashChat: true,
+  },
+  {
+    id: 'sphere-2',
+    user: {
+      id: 'u-anon-2',
+      name: 'Gizemli Dinleyici',
+      handle: '@anon_kadikoy',
+      isAnonymous: true,
+    },
+    song: SAMPLE_SONGS[3], // Lo-Fi Study Beats
+    moodTags: ['kahve', 'lo-fi', 'finaller'],
+    note: 'Üçüncü fincan filtre kahve, kod satırları arasında kayboldum.',
+    location: {
+      name: 'Montag Coffee Roasters',
+      neighborhood: 'Caferağa, Kadıköy',
+      city: 'İstanbul',
+      lat: 40.9892,
+      lng: 29.0265,
+      distanceMeters: 620,
+    },
+    createdAt: now - (50 * 60 * 1000),
+    expiresAt: now + (70 * 60 * 1000), // ~1 hr 10m left
+    energyLevel: 2,
+    resonanceScore: 88,
+    activeListenersCount: 11,
+    hasActiveFlashChat: false,
+  },
+  {
+    id: 'sphere-3',
+    user: {
+      id: 'u-3',
+      name: 'Emir Karahan',
+      handle: '@emir_k',
+      isAnonymous: false,
+      avatarUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=120&auto=format&fit=crop&q=80',
+    },
+    song: SAMPLE_SONGS[2], // Fred Again..
+    moodTags: ['gece', 'techno', 'bas'],
+    note: 'Kulaklık son ses, Akaretler yokuşunu tırmanırken bas ritmi.',
+    location: {
+      name: 'W Lounge & Akaretler',
+      neighborhood: 'Beşiktaş',
+      city: 'İstanbul',
+      lat: 41.0425,
+      lng: 29.0042,
+      distanceMeters: 1450,
+    },
+    createdAt: now - (105 * 60 * 1000),
+    expiresAt: now + (15 * 60 * 1000), // 15 mins left (sönüyor!)
+    energyLevel: 5,
+    resonanceScore: 91,
+    activeListenersCount: 18,
+    hasActiveFlashChat: true,
+  },
+  {
+    id: 'sphere-4',
+    user: {
+      id: 'u-4',
+      name: 'Selin & Melisa',
+      handle: '@selin_m',
+      isAnonymous: false,
+      avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80',
+    },
+    song: SAMPLE_SONGS[0], // Arctic Monkeys - 505
+    moodTags: ['yağmurlu', 'indie', 'nostalji'],
+    note: 'Karaköy vapurunu beklerken içe dokunan o nakarat...',
+    location: {
+      name: 'Karaköy Şehir Hatları İskelesi',
+      neighborhood: 'Karaköy, Beyoğlu',
+      city: 'İstanbul',
+      lat: 41.0232,
+      lng: 28.9785,
+      distanceMeters: 2100,
+    },
+    createdAt: now - (15 * 60 * 1000),
+    expiresAt: now + (105 * 60 * 1000), // 1 hr 45m left
+    energyLevel: 4,
+    resonanceScore: 99, // Perfect match with current user's song!
+    activeListenersCount: 24,
+    hasActiveFlashChat: true,
+  },
+  {
+    id: 'sphere-5',
+    user: {
+      id: 'u-anon-5',
+      name: 'ODTÜ Frekansı',
+      handle: '@odtu_vibe',
+      isAnonymous: true,
+    },
+    song: SAMPLE_SONGS[4], // Gaye Su Akyol
+    moodTags: ['psikedelik', 'kampüs', 'özgürlük'],
+    note: 'Çim amfide güneş batarken amfiden yükselen ses.',
+    location: {
+      name: 'ODTÜ Çim Amfi',
+      neighborhood: 'Üniversiteler Mah.',
+      city: 'Ankara',
+      lat: 39.8912,
+      lng: 32.7845,
+      distanceMeters: 450000,
+    },
+    createdAt: now - (40 * 60 * 1000),
+    expiresAt: now + (80 * 60 * 1000),
+    energyLevel: 4,
+    resonanceScore: 84,
+    activeListenersCount: 9,
+    hasActiveFlashChat: false,
+  },
+  {
+    id: 'sphere-6',
+    user: {
+      id: 'u-6',
+      name: 'Barış Deniz',
+      handle: '@baris_deniz',
+      isAnonymous: false,
+      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
+    },
+    song: SAMPLE_SONGS[7], // Peggy Gou
+    moodTags: ['enerjik', 'deniz', 'dans'],
+    note: 'Kordon boyunda paten kayarken ritme ayak uydurmak.',
+    location: {
+      name: 'Alsancak Kordon',
+      neighborhood: 'Konak',
+      city: 'İzmir',
+      lat: 38.4352,
+      lng: 27.1415,
+      distanceMeters: 330000,
+    },
+    createdAt: now - (60 * 60 * 1000),
+    expiresAt: now + (60 * 60 * 1000),
+    energyLevel: 5,
+    resonanceScore: 78,
+    activeListenersCount: 14,
+    hasActiveFlashChat: false,
+  },
+];
+
+export const INITIAL_FLASH_MESSAGES = [
+  {
+    id: 'm-1',
+    senderId: 'u-4',
+    senderName: 'Selin & Melisa',
+    text: 'Selam! Haritada 505 dinlediğini görünce inanamadım, şu an tam Karaköy vapurundayız 🎧',
+    timestamp: Date.now() - 1000 * 60 * 4,
+    isSelf: false,
+    type: 'text' as const,
+  },
+  {
+    id: 'm-2',
+    senderId: 'usr-self',
+    senderName: 'Kaan Demir',
+    text: 'Selam! En sevdiğim albüm favourite worst nightmare, nakarattaki gitar girişi her seferinde tüyleri ürpertiyor.',
+    timestamp: Date.now() - 1000 * 60 * 3,
+    isSelf: true,
+    type: 'text' as const,
+  },
+  {
+    id: 'm-3',
+    senderId: 'u-4',
+    senderName: 'Selin & Melisa',
+    text: '"I\'m going back to 505, if it\'s a 7 hour flight or a 45 minute drive..." Senkron dinlemeyi açıyorum!',
+    timestamp: Date.now() - 1000 * 60 * 1,
+    isSelf: false,
+    type: 'lyric' as const,
+  },
+];
