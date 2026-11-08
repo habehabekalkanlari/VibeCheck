@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { SongTrack, VibeSphere, MusicService } from '../types/vibe';
 import { SAMPLE_SONGS } from '../data/mockVibes';
+import { dropSphere } from '../services/api';
 import { audioSynth } from '../services/audioSynth';
 import { X, Sparkles, MapPin, Music, Radio, Shield, User, Clock, Check } from 'lucide-react';
 
@@ -39,45 +40,46 @@ export const DropSphereModal: React.FC<DropSphereModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     audioSynth.playDropSphereChime();
 
-    const now = Date.now();
-    const newSphere: VibeSphere = {
-      id: `sphere-${Date.now()}`,
-      user: {
-        id: isAnonymous ? `u-anon-${Date.now()}` : 'usr-self',
-        name: isAnonymous ? 'Gizemli Dinleyici' : 'Kaan Demir',
-        handle: isAnonymous ? '@anon_frekans' : '@kaan_vibes',
-        isAnonymous,
-        avatarUrl: isAnonymous ? undefined : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop&q=80',
-      },
-      song: selectedSong,
-      moodTags: [
-        tag1.trim() || 'vibe',
-        tag2.trim() || 'şehir',
-        tag3.trim() || 'frekans',
-      ],
-      note: note.trim() || undefined,
-      location: {
-        name: locationName,
+    try {
+      const sphere = await dropSphere({
+        songId: selectedSong.id,
+        moodTags: [tag1.trim() || 'vibe', tag2.trim() || 'şehir', tag3.trim() || 'frekans'],
+        note: note.trim(),
+        locationName,
         neighborhood: 'Kadıköy',
         city: 'İstanbul',
         lat: 40.9845 + (Math.random() - 0.5) * 0.005,
-        lng: 29.0280 + (Math.random() - 0.5) * 0.005,
-        distanceMeters: 50,
-      },
-      createdAt: now,
-      expiresAt: now + durationHours * 60 * 60 * 1000,
-      energyLevel: 4,
-      resonanceScore: 97,
-      activeListenersCount: 1,
-      hasActiveFlashChat: false,
-    };
-
-    onDropSphere(newSphere);
-    onClose();
+        lng: 29.028 + (Math.random() - 0.5) * 0.005,
+        energyLevel: 4,
+      });
+      onDropSphere(sphere);
+      onClose();
+    } catch {
+      const now = Date.now();
+      const fallback: VibeSphere = {
+        id: `sphere-${now}`,
+        user: { id: 'usr-self', name: 'Kaan Demir', handle: '@kaan_vibes', isAnonymous: false },
+        song: selectedSong,
+        moodTags: [tag1.trim() || 'vibe', tag2.trim() || 'şehir', tag3.trim() || 'frekans'],
+        note: note.trim() || undefined,
+        location: { name: locationName, neighborhood: 'Kadıköy', city: 'İstanbul',
+          lat: 40.9845 + (Math.random() - 0.5) * 0.005, lng: 29.028 + (Math.random() - 0.5) * 0.005, distanceMeters: 0 },
+        createdAt: now, expiresAt: now + durationHours * 3600000,
+        energyLevel: 4, activeListenersCount: 1, hasActiveFlashChat: false,
+      };
+      onDropSphere(fallback);
+      onClose();
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -338,9 +340,10 @@ export const DropSphereModal: React.FC<DropSphereModalProps> = ({
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-indigo-500 hover:from-cyan-300 hover:to-indigo-400 text-slate-950 font-bold text-sm tracking-wide shadow-[0_0_25px_rgba(6,182,212,0.4)] active:scale-[0.98] transition-all"
+              disabled={isSubmitting}
+              className="w-full py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-indigo-500 hover:from-cyan-300 hover:to-indigo-400 text-slate-950 font-bold text-sm tracking-wide shadow-[0_0_25px_rgba(6,182,212,0.4)] active:scale-[0.98] transition-all disabled:opacity-60"
             >
-              KÜREYİ HARİTAYA BIRAK
+              {isSubmitting ? 'Bırakılıyor...' : 'KÜREYİ HARİTAYA BIRAK'}
             </button>
           </div>
         </form>

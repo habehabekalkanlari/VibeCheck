@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { VibeSphere, ChatMessage, SongTrack } from '../types/vibe';
 import { audioSynth } from '../services/audioSynth';
+import { generateChatReply } from '../services/geminiChat';
 import { INITIAL_FLASH_MESSAGES } from '../data/mockVibes';
 import {
   X,
@@ -75,36 +76,26 @@ export const FlashChatDrawer: React.FC<FlashChatDrawerProps> = ({
       type: 'text',
     };
 
-    setMessages((prev) => [...prev, newMsg]);
+    const updatedMessages = [...messages, newMsg];
+    setMessages(updatedMessages);
     setInputVal('');
 
-    // Simulate smart interactive reply after 1.8 seconds
     setIsOtherTyping(true);
-    setTimeout(() => {
+    generateChatReply(sphere, updatedMessages).then((replyText) => {
       setIsOtherTyping(false);
       audioSynth.playClickSound(520, 'triangle', 0.06);
-
-      const dynamicResponses = [
-        `Kesinlikle katılıyorum! Özellikle o bridge kısmındaki davul geçişi tam Kadıköy gecesine uyuyor.`,
-        `Şu an kulaklığımda aynı parça çalıyor, senkron modu açıkken aynı anda dinlemek çok garip ama harika bir his!`,
-        `Bu parçayı geçen sene canlı dinlemiştim, konser alanı tam bir frekans patlamasıydı 🔥`,
-        `Haritada senin küreni görünce direkt tıkladım, müzik zevki uyuşan birine denk gelmek çok nadir oluyor.`,
-        `Bir sonraki parçaya ne geçelim? Arctic Monkeys mi Jakuzi mi devam edelim? 🎧`,
-      ];
-      const randomReply =
-        dynamicResponses[Math.floor(Math.random() * dynamicResponses.length)];
 
       const replyMsg: ChatMessage = {
         id: `reply-${Date.now()}`,
         senderId: sphere.user.id,
         senderName: sphere.user.name,
-        text: randomReply,
+        text: replyText,
         timestamp: Date.now(),
         isSelf: false,
         type: 'text',
       };
       setMessages((prev) => [...prev, replyMsg]);
-    }, 1800);
+    });
   };
 
   const handleQuickReaction = (emoji: string) => {

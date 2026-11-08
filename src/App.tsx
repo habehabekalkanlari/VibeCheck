@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PlatformOS, VibeSphere, SongTrack, UserProfile } from './types/vibe';
 import { INITIAL_SPHERES, SAMPLE_SONGS, CURRENT_USER } from './data/mockVibes';
+import { fetchSpheres, fetchCurrentUser } from './services/api';
 import { audioSynth } from './services/audioSynth';
 import { DeviceFrame } from './components/DeviceFrame';
 import { TopAppBar } from './components/TopAppBar';
@@ -17,10 +18,12 @@ import { BottomNavBar, TabKey } from './components/BottomNavBar';
 export default function App() {
   const [platform, setPlatform] = useState<PlatformOS>('ios');
   const [activeTab, setActiveTab] = useState<TabKey>('harita');
-  const [spheres, setSpheres] = useState<VibeSphere[]>(INITIAL_SPHERES);
+  const [spheres, setSpheres] = useState<VibeSphere[]>([]);
   const [currentSong, setCurrentSong] = useState<SongTrack>(SAMPLE_SONGS[0]);
+  const [currentUser, setCurrentUser] = useState<UserProfile>(CURRENT_USER);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [activePlayingSphereId, setActivePlayingSphereId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Modals & Drawers state
   const [selectedSphere, setSelectedSphere] = useState<VibeSphere | null>(null);
@@ -28,11 +31,35 @@ export default function App() {
   const [isDropModalOpen, setIsDropModalOpen] = useState<boolean>(false);
   const [isListeningTogether, setIsListeningTogether] = useState<boolean>(false);
 
-  // Periodic cleanup of expired spheres & update
   useEffect(() => {
-    const interval = setInterval(() => {
-      const now = Date.now();
-      setSpheres((prev) => prev.filter((s) => s.expiresAt > now));
+    async function loadData() {
+      try {
+        const [apiSpheres, apiUser] = await Promise.all([
+          fetchSpheres(),
+          fetchCurrentUser(),
+        ]);
+        setSpheres(apiSpheres);
+        setCurrentUser(apiUser);
+        if (apiUser.currentSong) setCurrentSong(apiUser.currentSong);
+      } catch {
+        setSpheres(INITIAL_SPHERES);
+        setCurrentUser(CURRENT_USER);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
+  // Periodic refresh from API + cleanup expired
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const apiSpheres = await fetchSpheres();
+        setSpheres(apiSpheres);
+      } catch {
+        setSpheres((prev) => prev.filter((s) => s.expiresAt > Date.now()));
+      }
     }, 30000);
     return () => clearInterval(interval);
   }, []);
@@ -98,6 +125,17 @@ export default function App() {
   // Count active chats
   const spheresWithChat = spheres.filter((s) => s.hasActiveFlashChat);
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-[#090b10] text-cyan-400">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+          <span className="text-sm font-mono">Küreler yükleniyor...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <DeviceFrame
       platform={platform}
@@ -147,7 +185,7 @@ export default function App() {
 
         {activeTab === 'profil' && (
           <ProfileView
-            user={CURRENT_USER}
+            user={currentUser}
             currentSong={currentSong}
             onOpenDropModal={() => setIsDropModalOpen(true)}
           />
